@@ -1,1 +1,0 @@
-# baradatipu.github.io
