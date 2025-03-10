@@ -1,106 +1,215 @@
-<!doctype html>
-<meta name="viewport" content="width=device-width, height=device-height, user-scalable=no">
-<script src="../components/web-animations-js/web-animations.min.js"></script>
-<style>
-  
-  .responsive {
-  width: 100%;
-  height: auto;
-}
-  body {
-    background-color: black;
-    overflow: hidden;
-  }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipu's Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none;
+        }
 
-  .starfield {
-    background-color: rgba(0,0,0,0);
-  }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            background: #0a192f;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-  .star0 {
-    height: 1px;
-    width: 1px;
-    opacity: 1;
-    position: absolute;
-  }
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
 
-  .star1 {
-    height: 2px;
-    width: 2px;
-    border-radius: 50%;
-    opacity: 1;
-    position: absolute;
-  }
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #64ffda;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+            transition: transform 0.2s;
+        }
 
-  .star2 {
-    height: 3px;
-    width: 3px;
-    border-radius: 50%;
-    opacity: 1;
-    position: absolute;
-  }
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: #64ffda;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+        }
 
-  .star3 {
-    height: 4px;
-    width: 4px;
-    border-radius: 50%;
-    opacity: 1;
-    position: absolute;
-  }
+        .content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
 
-  .star4 {
-    height: 4px;
-    width: 4px;
-    border-radius: 50%;
-    opacity: 1;
-    position: absolute;
-  }
-</style>
-<div id="universe"></div>
-<script>
-  var layerCount = 5;
-  var starCount = 100;
-  var universe = document.getElementById('universe');
-  var w = window;
-  var d = document;
-  var e = d.documentElement;
-  var g = d.getElementsByTagName('body')[0];
-  var width = w.innerWidth || e.clientWidth || g.clientWidth;
-  var height = w.innerHeight|| e.clientHeight|| g.clientHeight;
-  for (var l = 0; l < layerCount; ++l) {
-    var layer = document.createElement('div');
-    layer.setAttribute('id', 'layer' + l);
-    layer.setAttribute('class', 'starfield');
-    universe.appendChild(layer);
-    for (var i = 0; i < starCount; ++i) {
-      var xpos = Math.round(Math.random() * width);
-      var ypos = Math.round(Math.random() * height);
-      for (var s = 0; s < 2; ++s) {
-        var star = document.createElement('div');
-        star.setAttribute('class', 'star' + l);
-        star.style.webkitTransform = 'translate(' + (xpos + s * width) + 'px, ' + ypos + 'px)';
-        star.style.transform = 'translate(' + (xpos + s * width) + 'px, ' + ypos + 'px)';
-        star.style.backgroundColor = 'white';//rgb(' + Math.round(Math.random() * 255) + ', ' + Math.round(Math.random() * 255) + ', ' + Math.round(Math.random() * 255) + ')';
-        layer.appendChild(star);
-      }
-    }
-    layer.animate([{transform: 'translate3d(0, 0, 0)'},
-                   {transform: 'translate3d(-' + width + 'px, 0, 0)'}],
-                  {duration: Math.pow(2, layerCount - l) * 1000, iterations: Infinity});
-  }
-</script>
-<h1 style="text-align:center; color:white;"></h1>
-<br>
-<p style=" font-size:50px; color:white;"></p>
+        .name {
+            font-size: 4em;
+            color: #64ffda;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
+        }
 
-<style>
-img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>
-<img src="gif.gif" alt="Tipu" class="responsive" width="700" height="200">
-<img src="gif2.gif" alt="Tipu" class="responsive" width="700" height="200">
-<a href="https://github.com/baradatipu/C-Projects">
-<img src="gif3.gif" alt="Tipu" class="responsive" width="600" height="160">
-</a>
+        .tagline {
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            color: #8892b0;
+            animation: fadeInUp 1s ease 0.2s;
+            animation-fill-mode: both;
+        }
+
+        .description {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #8892b0;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 0.4s;
+            animation-fill-mode: both;
+        }
+
+        .interests {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            animation: fadeInUp 1s ease 0.6s;
+            animation-fill-mode: both;
+        }
+
+        .interest-tag {
+            background: rgba(100, 255, 218, 0.1);
+            color: #64ffda;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .interest-tag:hover {
+            background: rgba(100, 255, 218, 0.2);
+            transform: translateY(-2px);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .name {
+                font-size: 3em;
+            }
+            .tagline {
+                font-size: 1.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+    <div id="particles-js"></div>
+
+    <div class="content">
+        <h1 class="name">Tipu</h1>
+        <p class="tagline">Namaste! 🙏 Tech enthusiast from India</p>
+        <div class="description">
+            Hey there! I'm a 23-year-old tech enthusiast who's totally crazy about technology! You know how some people can't stop experimenting with new gadgets and tech stuff? That's me! 😄
+            <br><br>
+            I'm super passionate about making cool things happen in the digital world. Whether it's crafting awesome websites, keeping the bad guys away from our cyber space, or teaching computers to think smart - I'm your go-to person!
+        </div>
+        <div class="interests">
+            <span class="interest-tag">Web Development</span>
+            <span class="interest-tag">Cyber Security</span>
+            <span class="interest-tag">Business Automation</span>
+            <span class="interest-tag">Business R&D</span>
+            <span class="interest-tag">AI Research</span>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // Particles.js Config
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#64ffda" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: false },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#64ffda",
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 3,
+                    direction: "none",
+                    random: false,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "grab" },
+                    onclick: { enable: true, mode: "push" },
+                    resize: true
+                },
+                modes: {
+                    grab: { distance: 140, line_linked: { opacity: 0.5 } },
+                    push: { particles_nb: 4 }
+                }
+            },
+            retina_detect: true
+        });
+
+        // Custom Cursor Animation
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.style.transform = 'scale(0.8)';
+            cursorDot.style.transform = 'scale(0.8)';
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.style.transform = 'scale(1)';
+            cursorDot.style.transform = 'scale(1)';
+        });
+    </script>
+</body>
+</html>
