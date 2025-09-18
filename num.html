@@ -2,54 +2,408 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Number Rule Checker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🔢 Number Rule Checker 🎯</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    input { padding: 10px; width: 250px; font-size: 16px; }
-    .status { margin-top: 10px; font-weight: bold; }
-    .pass { color: green; }
-    .fail { color: red; }
-    table { margin-top: 15px; border-collapse: collapse; width: 300px; }
-    th, td { border: 1px solid #999; padding: 8px; text-align: center; }
-    th { background-color: #eee; }
-    .calc-box { margin-top: 15px; padding: 10px; border: 1px solid #aaa; width: 300px; background: #f9f9f9; }
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .header h1 {
+      font-size: 2.5em;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 10px;
+    }
+    
+    .header p {
+      color: #666;
+      font-size: 1.1em;
+      opacity: 0.8;
+    }
+    
+    .input-section {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .input-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 20px;
+    }
+    
+    #numberInput {
+      width: 320px;
+      padding: 18px 25px;
+      font-size: 1.4em;
+      border: 3px solid #e0e0e0;
+      border-radius: 15px;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 2px;
+      transition: all 0.3s ease;
+      background: linear-gradient(145deg, #ffffff, #f0f0f0);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    
+    #numberInput:focus {
+      outline: none;
+      border-color: #4ecdc4;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(78, 205, 196, 0.3);
+    }
+    
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .rule-card {
+      background: linear-gradient(145deg, #ffffff, #f8f9fa);
+      padding: 20px;
+      border-radius: 15px;
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    
+    .rule-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+    }
+    
+    .rule-card.pass {
+      border-color: #4caf50;
+      background: linear-gradient(145deg, #e8f5e8, #ffffff);
+      animation: pulse-success 2s infinite;
+    }
+    
+    .rule-card.fail {
+      border-color: #f44336;
+      background: linear-gradient(145deg, #ffeaea, #ffffff);
+    }
+    
+    @keyframes pulse-success {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    
+    .rule-title {
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .rule-status {
+      font-size: 2.5em;
+      margin-right: 10px;
+    }
+    
+    .pass .rule-status { color: #4caf50; }
+    .fail .rule-status { color: #f44336; }
+    
+    .calc-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+    
+    .calc-box {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 25px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+    
+    .calc-box h3 {
+      font-size: 1.3em;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .calc-value {
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-top: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .frequency-section {
+      background: linear-gradient(145deg, #ffffff, #f8f9fa);
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    }
+    
+    .frequency-title {
+      text-align: center;
+      font-size: 1.5em;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .digit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+      gap: 15px;
+    }
+    
+    .digit-card {
+      background: linear-gradient(145deg, #ffffff, #f0f0f0);
+      border-radius: 12px;
+      padding: 15px;
+      text-align: center;
+      border: 2px solid #e0e0e0;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    }
+    
+    .digit-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    }
+    
+    .digit-card.forbidden {
+      border-color: #f44336;
+      background: linear-gradient(145deg, #ffebee, #ffffff);
+    }
+    
+    .digit-card.present {
+      border-color: #4caf50;
+      background: linear-gradient(145deg, #e8f5e8, #ffffff);
+    }
+    
+    .digit-card.forbidden-present {
+      border-color: #f44336;
+      background: linear-gradient(145deg, #ffcdd2, #ffffff);
+      animation: shake 0.5s ease-in-out;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      75% { transform: translateX(5px); }
+    }
+    
+    .digit-number {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 5px;
+    }
+    
+    .digit-count {
+      font-size: 1.2em;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .digit-status {
+      font-size: 1.5em;
+    }
+    
+    .all-rules-pass {
+      text-align: center;
+      margin-top: 30px;
+      padding: 25px;
+      background: linear-gradient(135deg, #4caf50, #45a049);
+      color: white;
+      border-radius: 15px;
+      font-size: 1.3em;
+      font-weight: 600;
+      box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+      animation: celebration 2s infinite;
+    }
+    
+    @keyframes celebration {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px;
+        margin: 10px;
+      }
+      
+      .header h1 {
+        font-size: 2em;
+      }
+      
+      #numberInput {
+        width: 100%;
+        max-width: 300px;
+      }
+      
+      .rules-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .calc-section {
+        grid-template-columns: 1fr;
+      }
+      
+      .digit-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .digit-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      
+      .digit-card {
+        padding: 10px;
+      }
+      
+      .digit-number {
+        font-size: 1.4em;
+      }
+    }
   </style>
 </head>
 <body>
-  <h2>Number Rule Checker</h2>
-  <input type="text" id="numberInput" placeholder="Enter 10-digit number" maxlength="10" />
-  
-  <div class="status" id="rule1">❌ Rule 1: Must be 10 digits</div>
-  <div class="status" id="rule2">❌ Rule 2: No 0, 4, 7, 8 allowed</div>
-  <div class="status" id="rule3">❌ Rule 3: Last digit must be 6</div>
-  <div class="status" id="rule4">❌ Rule 4: Final digit sum must be 6</div>
+  <div class="container">
+    <div class="header">
+      <h1>🔢 Number Rule Checker 🎯</h1>
+      <p>✨ Enter a 10-digit number and watch the magic happen! ✨</p>
+    </div>
 
-  <div class="calc-box">
-    <b>Total Value:</b> <span id="totalValue">-</span><br>
-    <b>Sum Value (Single Digit):</b> <span id="sumValue">-</span>
+    <div class="input-section">
+      <div class="input-wrapper">
+        <input type="text" id="numberInput" placeholder="🔤 Enter 10-digit number" maxlength="10" />
+      </div>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rule-card fail" id="rule1Card">
+        <div class="rule-title">
+          <span class="rule-status" id="rule1Status">❌</span>
+          <div>
+            <div>📏 Rule 1: Length Check</div>
+            <small id="rule1Text">Must be exactly 10 digits</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="rule-card fail" id="rule2Card">
+        <div class="rule-title">
+          <span class="rule-status" id="rule2Status">❌</span>
+          <div>
+            <div>🚫 Rule 2: Forbidden Digits</div>
+            <small id="rule2Text">No 0, 4, 7, 8 allowed</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="rule-card fail" id="rule3Card">
+        <div class="rule-title">
+          <span class="rule-status" id="rule3Status">❌</span>
+          <div>
+            <div>🎯 Rule 3: Last Digit</div>
+            <small id="rule3Text">Must end with 6</small>
+          </div>
+        </div>
+      </div>
+      
+      <div class="rule-card fail" id="rule4Card">
+        <div class="rule-title">
+          <span class="rule-status" id="rule4Status">❌</span>
+          <div>
+            <div>🧮 Rule 4: Digit Sum</div>
+            <small id="rule4Text">Final sum must equal 6</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="calc-section">
+      <div class="calc-box">
+        <h3>🔢 Total Value</h3>
+        <div class="calc-value" id="totalValue">-</div>
+      </div>
+      <div class="calc-box">
+        <h3>🎯 Sum Value</h3>
+        <div class="calc-value" id="sumValue">-</div>
+      </div>
+    </div>
+
+    <div class="frequency-section">
+      <div class="frequency-title">
+        📊 Digit Frequency Analysis 📈
+      </div>
+      <div class="digit-grid" id="digitGrid"></div>
+    </div>
+
+    <div id="successMessage" class="all-rules-pass" style="display: none;">
+      🎉 CONGRATULATIONS! 🎉<br>
+      ✅ All rules passed! Your number is perfect! ✨
+    </div>
   </div>
-
-  <h3>Digit Frequency</h3>
-  <table>
-    <thead>
-      <tr>
-        <th>Digit</th>
-        <th>Count</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="digitTable"></tbody>
-  </table>
 
   <script>
     const input = document.getElementById("numberInput");
-    const rule1 = document.getElementById("rule1");
-    const rule2 = document.getElementById("rule2");
-    const rule3 = document.getElementById("rule3");
-    const rule4 = document.getElementById("rule4");
-    const digitTable = document.getElementById("digitTable");
     const totalValue = document.getElementById("totalValue");
     const sumValue = document.getElementById("sumValue");
+    const digitGrid = document.getElementById("digitGrid");
+    const successMessage = document.getElementById("successMessage");
+
+    const rules = {
+      1: { card: document.getElementById("rule1Card"), status: document.getElementById("rule1Status"), text: document.getElementById("rule1Text") },
+      2: { card: document.getElementById("rule2Card"), status: document.getElementById("rule2Status"), text: document.getElementById("rule2Text") },
+      3: { card: document.getElementById("rule3Card"), status: document.getElementById("rule3Status"), text: document.getElementById("rule3Text") },
+      4: { card: document.getElementById("rule4Card"), status: document.getElementById("rule4Status"), text: document.getElementById("rule4Text") }
+    };
 
     function digitSum(num) {
       let total = num.split("").reduce((acc, d) => acc + (parseInt(d) || 0), 0);
@@ -60,32 +414,66 @@
       return { total, reduced };
     }
 
-    function updateTable(num) {
-      digitTable.innerHTML = "";
+    function updateRule(ruleNum, passed, statusEmoji, text) {
+      const rule = rules[ruleNum];
+      rule.status.textContent = statusEmoji;
+      rule.text.textContent = text;
+      rule.card.className = passed ? "rule-card pass" : "rule-card fail";
+    }
+
+    function updateDigitGrid(num) {
+      digitGrid.innerHTML = "";
       let counts = {};
       for (let i = 0; i <= 9; i++) counts[i] = 0;
       for (let d of num) counts[d]++;
 
+      const forbiddenDigits = ["0", "4", "7", "8"];
+      const digitEmojis = {
+        0: "0️⃣", 1: "1️⃣", 2: "2️⃣", 3: "3️⃣", 4: "4️⃣",
+        5: "5️⃣", 6: "6️⃣", 7: "7️⃣", 8: "8️⃣", 9: "9️⃣"
+      };
+
       for (let i = 0; i <= 9; i++) {
-        let row = document.createElement("tr");
-        let cell1 = document.createElement("td");
-        cell1.textContent = i;
-        let cell2 = document.createElement("td");
-        cell2.textContent = counts[i];
-        let cell3 = document.createElement("td");
-
-        if (["0","4","7","8"].includes(i.toString()) && counts[i] > 0) {
-          cell3.textContent = "❌ Present";
-          cell3.style.color = "red";
-        } else {
-          cell3.textContent = counts[i] > 0 ? "✅ OK" : "-";
-          cell3.style.color = counts[i] > 0 ? "green" : "black";
+        const card = document.createElement("div");
+        const isForbidden = forbiddenDigits.includes(i.toString());
+        const isPresent = counts[i] > 0;
+        
+        let className = "digit-card";
+        let statusEmoji = "⚪";
+        
+        if (isForbidden && isPresent) {
+          className += " forbidden-present";
+          statusEmoji = "🚨";
+        } else if (isForbidden) {
+          className += " forbidden";
+          statusEmoji = "🚫";
+        } else if (isPresent) {
+          className += " present";
+          statusEmoji = "✅";
         }
+        
+        card.className = className;
+        card.innerHTML = `
+          <div class="digit-number">${digitEmojis[i]}</div>
+          <div class="digit-count">${counts[i]}</div>
+          <div class="digit-status">${statusEmoji}</div>
+        `;
+        
+        digitGrid.appendChild(card);
+      }
+    }
 
-        row.appendChild(cell1);
-        row.appendChild(cell2);
-        row.appendChild(cell3);
-        digitTable.appendChild(row);
+    function checkAllRules() {
+      const allPassed = Object.values(rules).every(rule => 
+        rule.card.classList.contains("pass")
+      );
+      
+      successMessage.style.display = allPassed ? "block" : "none";
+      
+      if (allPassed) {
+        setTimeout(() => {
+          // Add confetti effect here if needed
+        }, 100);
       }
     }
 
@@ -94,60 +482,62 @@
 
       // Rule 1: 10 digits
       if (/^\d{10}$/.test(num)) {
-        rule1.textContent = "✅ Rule 1: 10 digits";
-        rule1.className = "status pass";
+        updateRule(1, true, "✅", "Perfect! Exactly 10 digits 🎯");
       } else {
-        rule1.textContent = "❌ Rule 1: Must be 10 digits";
-        rule1.className = "status fail";
+        updateRule(1, false, "❌", `Current: ${num.length} digits (need 10)`);
       }
 
       // Rule 2: No 0,4,7,8
-      if (/^[^0478]*$/.test(num) && num.length === 10) {
-        rule2.textContent = "✅ Rule 2: No 0, 4, 7, 8 allowed";
-        rule2.className = "status pass";
+      if (/^[^0478]*$/.test(num) && num.length > 0) {
+        updateRule(2, true, "✅", "Great! No forbidden digits 🚫");
       } else {
-        rule2.textContent = "❌ Rule 2: No 0, 4, 7, 8 allowed";
-        rule2.className = "status fail";
+        const forbiddenFound = num.split("").filter(d => ["0","4","7","8"].includes(d));
+        if (forbiddenFound.length > 0) {
+          updateRule(2, false, "❌", `Found forbidden: ${[...new Set(forbiddenFound)].join(", ")}`);
+        } else {
+          updateRule(2, false, "❌", "No 0, 4, 7, 8 allowed");
+        }
       }
 
       // Rule 3: Last digit must be 6
-      if (num.endsWith("6")) {
-        rule3.textContent = "✅ Rule 3: Last digit is 6";
-        rule3.className = "status pass";
+      if (num.endsWith("6") && num.length > 0) {
+        updateRule(3, true, "✅", "Perfect! Ends with 6 🎯");
       } else {
-        rule3.textContent = "❌ Rule 3: Last digit must be 6";
-        rule3.className = "status fail";
+        updateRule(3, false, "❌", num.length > 0 ? `Currently ends with: ${num.slice(-1)}` : "Must end with 6");
       }
 
       // Rule 4: Final digit sum must be 6
       if (num.length === 10) {
         let { total, reduced } = digitSum(num);
-        totalValue.textContent = total;
+        totalValue.textContent = total.toLocaleString();
         sumValue.textContent = reduced;
 
         if (reduced === 6) {
-          rule4.textContent = `✅ Rule 4: Final digit sum = 6`;
-          rule4.className = "status pass";
+          updateRule(4, true, "✅", `Perfect! Sum equals 6 ✨`);
         } else {
-          rule4.textContent = `❌ Rule 4: Final digit sum must be 6 (Current: ${reduced})`;
-          rule4.className = "status fail";
+          updateRule(4, false, "❌", `Current sum: ${reduced} (need 6)`);
         }
       } else {
         totalValue.textContent = "-";
         sumValue.textContent = "-";
-        rule4.textContent = "❌ Rule 4: Enter 10 digits first";
-        rule4.className = "status fail";
+        updateRule(4, false, "❌", "Enter 10 digits first");
       }
 
-      // Update digit table
+      // Update digit grid
       if (num.length > 0) {
-        updateTable(num);
+        updateDigitGrid(num);
       } else {
-        digitTable.innerHTML = "";
+        digitGrid.innerHTML = "";
         totalValue.textContent = "-";
         sumValue.textContent = "-";
       }
+
+      // Check if all rules pass
+      checkAllRules();
     });
+
+    // Initialize digit grid
+    updateDigitGrid("");
   </script>
 </body>
 </html>
