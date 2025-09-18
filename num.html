@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Number Rule Checker</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    input { padding: 10px; width: 250px; font-size: 16px; }
+    .status { margin-top: 10px; font-weight: bold; }
+    .pass { color: green; }
+    .fail { color: red; }
+    table { margin-top: 15px; border-collapse: collapse; width: 300px; }
+    th, td { border: 1px solid #999; padding: 8px; text-align: center; }
+    th { background-color: #eee; }
+    .calc-box { margin-top: 15px; padding: 10px; border: 1px solid #aaa; width: 300px; background: #f9f9f9; }
+  </style>
+</head>
+<body>
+  <h2>Number Rule Checker</h2>
+  <input type="text" id="numberInput" placeholder="Enter 10-digit number" maxlength="10" />
+  
+  <div class="status" id="rule1">❌ Rule 1: Must be 10 digits</div>
+  <div class="status" id="rule2">❌ Rule 2: No 0, 4, 7, 8 allowed</div>
+  <div class="status" id="rule3">❌ Rule 3: Last digit must be 6</div>
+  <div class="status" id="rule4">❌ Rule 4: Final digit sum must be 6</div>
+
+  <div class="calc-box">
+    <b>Total Value:</b> <span id="totalValue">-</span><br>
+    <b>Sum Value (Single Digit):</b> <span id="sumValue">-</span>
+  </div>
+
+  <h3>Digit Frequency</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Digit</th>
+        <th>Count</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="digitTable"></tbody>
+  </table>
+
+  <script>
+    const input = document.getElementById("numberInput");
+    const rule1 = document.getElementById("rule1");
+    const rule2 = document.getElementById("rule2");
+    const rule3 = document.getElementById("rule3");
+    const rule4 = document.getElementById("rule4");
+    const digitTable = document.getElementById("digitTable");
+    const totalValue = document.getElementById("totalValue");
+    const sumValue = document.getElementById("sumValue");
+
+    function digitSum(num) {
+      let total = num.split("").reduce((acc, d) => acc + (parseInt(d) || 0), 0);
+      let reduced = total;
+      while (reduced > 9) {
+        reduced = reduced.toString().split("").reduce((a, d) => a + parseInt(d), 0);
+      }
+      return { total, reduced };
+    }
+
+    function updateTable(num) {
+      digitTable.innerHTML = "";
+      let counts = {};
+      for (let i = 0; i <= 9; i++) counts[i] = 0;
+      for (let d of num) counts[d]++;
+
+      for (let i = 0; i <= 9; i++) {
+        let row = document.createElement("tr");
+        let cell1 = document.createElement("td");
+        cell1.textContent = i;
+        let cell2 = document.createElement("td");
+        cell2.textContent = counts[i];
+        let cell3 = document.createElement("td");
+
+        if (["0","4","7","8"].includes(i.toString()) && counts[i] > 0) {
+          cell3.textContent = "❌ Present";
+          cell3.style.color = "red";
+        } else {
+          cell3.textContent = counts[i] > 0 ? "✅ OK" : "-";
+          cell3.style.color = counts[i] > 0 ? "green" : "black";
+        }
+
+        row.appendChild(cell1);
+        row.appendChild(cell2);
+        row.appendChild(cell3);
+        digitTable.appendChild(row);
+      }
+    }
+
+    input.addEventListener("input", () => {
+      const num = input.value.trim();
+
+      // Rule 1: 10 digits
+      if (/^\d{10}$/.test(num)) {
+        rule1.textContent = "✅ Rule 1: 10 digits";
+        rule1.className = "status pass";
+      } else {
+        rule1.textContent = "❌ Rule 1: Must be 10 digits";
+        rule1.className = "status fail";
+      }
+
+      // Rule 2: No 0,4,7,8
+      if (/^[^0478]*$/.test(num) && num.length === 10) {
+        rule2.textContent = "✅ Rule 2: No 0, 4, 7, 8 allowed";
+        rule2.className = "status pass";
+      } else {
+        rule2.textContent = "❌ Rule 2: No 0, 4, 7, 8 allowed";
+        rule2.className = "status fail";
+      }
+
+      // Rule 3: Last digit must be 6
+      if (num.endsWith("6")) {
+        rule3.textContent = "✅ Rule 3: Last digit is 6";
+        rule3.className = "status pass";
+      } else {
+        rule3.textContent = "❌ Rule 3: Last digit must be 6";
+        rule3.className = "status fail";
+      }
+
+      // Rule 4: Final digit sum must be 6
+      if (num.length === 10) {
+        let { total, reduced } = digitSum(num);
+        totalValue.textContent = total;
+        sumValue.textContent = reduced;
+
+        if (reduced === 6) {
+          rule4.textContent = `✅ Rule 4: Final digit sum = 6`;
+          rule4.className = "status pass";
+        } else {
+          rule4.textContent = `❌ Rule 4: Final digit sum must be 6 (Current: ${reduced})`;
+          rule4.className = "status fail";
+        }
+      } else {
+        totalValue.textContent = "-";
+        sumValue.textContent = "-";
+        rule4.textContent = "❌ Rule 4: Enter 10 digits first";
+        rule4.className = "status fail";
+      }
+
+      // Update digit table
+      if (num.length > 0) {
+        updateTable(num);
+      } else {
+        digitTable.innerHTML = "";
+        totalValue.textContent = "-";
+        sumValue.textContent = "-";
+      }
+    });
+  </script>
+</body>
+</html>
