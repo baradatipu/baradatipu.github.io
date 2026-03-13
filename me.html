@@ -5,171 +5,441 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Visitor From Another Planet</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Syncopate:wght@400;700&display=swap" rel="stylesheet">
+
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, sans-serif;
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --sky:#02040f;
+  --moon-glow:#fffbe8;
+  --planet-blue:#4a82ff;
+  --planet-light:#a8e6ff;
+  --accent:#7eb8ff;
+  --text:#dce9ff;
+}
+
+html,body{
+  width:100%;min-height:100vh;
+  background:var(--sky);
+  overflow-x:hidden;
 }
 
 body{
-background:#02040f;
-color:white;
-min-height:100vh;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:20px;
-overflow-x:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  font-family:'Cormorant Garamond',serif;
+  color:var(--text);
 }
 
-/* glass container */
-
-.container{
-max-width:700px;
-line-height:1.8;
-font-size:18px;
-text-align:justify;
-
-background:rgba(0,0,0,0.35);
-backdrop-filter:blur(12px);
--webkit-backdrop-filter:blur(12px);
-
-padding:30px;
-border-radius:18px;
-border:1px solid rgba(255,255,255,0.15);
-box-shadow:0 0 25px rgba(0,0,0,0.5);
-
-z-index:10;
+/* ── CANVAS LAYER ── */
+canvas#cosmos{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
 }
 
-.container p{
-margin-bottom:14px;
+/* ── NEBULA BLOBS ── */
+.nebula{
+  position:fixed;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:0;
+  animation:nebulaDrift 18s ease-in-out infinite;
+  pointer-events:none;
+  z-index:1;
+}
+.n1{width:420px;height:420px;background:radial-gradient(circle,#1a2fff33,transparent 70%);top:-80px;left:-100px;animation-delay:0s;}
+.n2{width:500px;height:300px;background:radial-gradient(circle,#0d4fff22,transparent 70%);bottom:-60px;right:-120px;animation-delay:-6s;}
+.n3{width:300px;height:300px;background:radial-gradient(circle,#7b2fff18,transparent 70%);top:40%;left:30%;animation-delay:-12s;}
+
+@keyframes nebulaDrift{
+  0%  {opacity:0;  transform:translate(0,0)   scale(1);}
+  20% {opacity:1;}
+  50% {opacity:0.7;transform:translate(30px,-20px) scale(1.08);}
+  80% {opacity:1;}
+  100%{opacity:0;  transform:translate(0,0)   scale(1);}
 }
 
-/* moon */
-
+/* ── MOON ── */
 .moon{
-position:fixed;
-top:70px;
-right:60px;
-width:90px;
-height:90px;
-background:#f5f3ce;
-border-radius:50%;
-box-shadow:0 0 40px #fff;
+  position:fixed;
+  top:60px;right:70px;
+  width:86px;height:86px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fffef0,#e8e0aa 60%,#c8bb6a);
+  box-shadow:0 0 30px 8px rgba(255,252,210,0.35),0 0 80px 20px rgba(255,252,210,0.12);
+  animation:moonFloat 8s ease-in-out infinite, moonGlow 4s ease-in-out infinite alternate;
+  z-index:2;
+}
+.moon::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 60% 40%,transparent 55%,rgba(0,0,0,0.18) 100%);
 }
 
-/* planet */
+@keyframes moonFloat{
+  0%,100%{transform:translateY(0);}
+  50%    {transform:translateY(-14px);}
+}
+@keyframes moonGlow{
+  from{box-shadow:0 0 30px 8px rgba(255,252,210,0.35),0 0 80px 20px rgba(255,252,210,0.12);}
+  to  {box-shadow:0 0 45px 14px rgba(255,252,210,0.5),0 0 120px 35px rgba(255,252,210,0.2);}
+}
 
+/* ── PLANET ── */
 .planet{
-position:fixed;
-bottom:120px;
-left:60px;
-width:120px;
-height:120px;
-background:linear-gradient(45deg,#5b8cff,#8fd3ff);
-border-radius:50%;
-box-shadow:0 0 35px #5b8cff;
+  position:fixed;
+  bottom:100px;left:55px;
+  width:118px;height:118px;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 32% 28%,#a8d8ff,#4a82ff 50%,#1230bb);
+  box-shadow:0 0 40px 10px rgba(74,130,255,0.45),0 0 100px 30px rgba(74,130,255,0.18);
+  animation:planetFloat 11s ease-in-out infinite, planetSpin 40s linear infinite;
+  z-index:2;
+  overflow:hidden;
+}
+/* ring */
+.planet::before{
+  content:'';
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%) rotateX(72deg);
+  width:160px;height:160px;
+  border-radius:50%;
+  border:8px solid rgba(168,230,255,0.28);
+  box-shadow:0 0 12px rgba(168,230,255,0.2);
+}
+/* atmosphere shimmer */
+.planet::after{
+  content:'';
+  position:absolute;inset:0;border-radius:50%;
+  background:conic-gradient(from 0deg,transparent 0%,rgba(168,230,255,0.1) 20%,transparent 40%);
+  animation:atmosphereSpin 8s linear infinite;
 }
 
-/* stars */
-
-.star{
-position:fixed;
-width:2px;
-height:2px;
-background:white;
-animation:twinkle 2s infinite alternate;
+@keyframes planetFloat{
+  0%,100%{transform:translateY(0) rotate(0deg);}
+  50%    {transform:translateY(-18px) rotate(2deg);}
+}
+@keyframes planetSpin{
+  to{background-position:100% 50%;}
+}
+@keyframes atmosphereSpin{
+  to{transform:rotate(360deg);}
 }
 
-@keyframes twinkle{
-from{opacity:0.3;}
-to{opacity:1;}
+/* ── SHOOTING STARS ── */
+.shoot{
+  position:fixed;
+  width:130px;height:1.5px;
+  background:linear-gradient(90deg,rgba(255,255,255,0),white);
+  border-radius:2px;
+  opacity:0;
+  z-index:2;
+  animation:shoot 3s linear infinite;
+}
+.shoot:nth-child(1){top:18%;left:20%;transform:rotate(-20deg);animation-delay:0s;}
+.shoot:nth-child(2){top:35%;left:55%;transform:rotate(-15deg);animation-delay:1.8s;}
+.shoot:nth-child(3){top:60%;left:10%;transform:rotate(-25deg);animation-delay:3.6s;}
+.shoot:nth-child(4){top:10%;left:70%;transform:rotate(-18deg);animation-delay:5.2s;}
+
+@keyframes shoot{
+  0%  {opacity:0;transform:translateX(0) rotate(-20deg);}
+  10% {opacity:1;}
+  60% {opacity:0;transform:translateX(220px) rotate(-20deg);}
+  100%{opacity:0;}
 }
 
-/* signature */
+/* ── FLOATING PARTICLES ── */
+.orb{
+  position:fixed;
+  border-radius:50%;
+  background:rgba(126,184,255,0.6);
+  box-shadow:0 0 6px rgba(126,184,255,0.8);
+  animation:orbFloat linear infinite;
+  z-index:2;
+  pointer-events:none;
+}
 
+/* ── CARD ── */
+.card{
+  position:relative;
+  z-index:10;
+  max-width:660px;width:100%;
+  padding:52px 56px;
+  border-radius:24px;
+  border:1px solid rgba(126,184,255,0.18);
+  background:rgba(4,8,28,0.55);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.04),
+    0 30px 80px rgba(0,0,0,0.6),
+    inset 0 1px 0 rgba(255,255,255,0.07);
+  animation:cardIn 1.2s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes cardIn{
+  from{opacity:0;transform:translateY(40px) scale(0.97);}
+  to  {opacity:1;transform:translateY(0)    scale(1);}
+}
+
+/* glint border sweep */
+.card::before{
+  content:'';
+  position:absolute;inset:0;border-radius:24px;
+  background:conic-gradient(from var(--a,0deg),transparent 0%,rgba(126,184,255,0.25) 5%,transparent 10%);
+  animation:borderSweep 6s linear infinite;
+  -webkit-mask:linear-gradient(#000,#000) content-box,linear-gradient(#000,#000);
+  -webkit-mask-composite:destination-out;
+  mask-composite:exclude;
+  padding:1px;
+  pointer-events:none;
+}
+@property --a{syntax:'<angle>';initial-value:0deg;inherits:false;}
+@keyframes borderSweep{to{--a:360deg;}}
+
+/* ── TYPOGRAPHY ── */
+p{
+  font-family:'Cormorant Garamond',serif;
+  font-size:19px;
+  font-weight:300;
+  line-height:1.9;
+  color:rgba(210,228,255,0.88);
+  margin-bottom:20px;
+  opacity:0;
+  animation:fadeUp 0.8s ease both;
+}
+p:nth-child(1){animation-delay:0.3s;}
+p:nth-child(2){animation-delay:0.55s;}
+p:nth-child(3){animation-delay:0.75s;}
+p:nth-child(4){animation-delay:0.95s;}
+p:nth-child(5){animation-delay:1.15s;}
+p:nth-child(6){animation-delay:1.35s;}
+p:nth-child(7){animation-delay:1.55s;}
+p:nth-child(8){animation-delay:1.75s;}
+
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(18px);}
+  to  {opacity:1;transform:translateY(0);}
+}
+
+strong{
+  font-family:'Syncopate',sans-serif;
+  font-size:13.5px;
+  font-weight:700;
+  letter-spacing:0.12em;
+  color:#a8d4ff;
+  text-transform:uppercase;
+}
+
+.highlight{
+  font-style:italic;
+  color:#c8deff;
+}
+
+/* ── DIVIDER ── */
+.divider{
+  width:60px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(126,184,255,0.5),transparent);
+  margin:24px auto;
+  opacity:0;
+  animation:fadeUp 0.8s 1s ease both;
+}
+
+/* ── SIGNATURE ── */
 .signature{
-margin-top:25px;
-text-align:right;
-font-size:20px;
-letter-spacing:2px;
-color:#8fd3ff;
+  text-align:right;
+  margin-top:28px;
+  font-family:'Syncopate',sans-serif;
+  font-size:11px;
+  letter-spacing:0.28em;
+  color:rgba(126,184,255,0.7);
+  text-transform:uppercase;
+  opacity:0;
+  animation:fadeUp 0.8s 2s ease both;
+}
+.signature span{
+  display:inline-block;
+  border-top:1px solid rgba(126,184,255,0.25);
+  padding-top:10px;
 }
 
-/* mobile */
+/* ── CURSOR GLOW ── */
+.cursor-glow{
+  position:fixed;
+  width:300px;height:300px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(74,130,255,0.06),transparent 70%);
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  z-index:5;
+  transition:opacity 0.3s;
+}
 
+/* ── MOBILE ── */
 @media(max-width:600px){
-
-.container{
-font-size:16px;
-padding:22px;
-}
-
-.moon{
-width:70px;
-height:70px;
-}
-
-.planet{
-width:90px;
-height:90px;
-}
-
+  .card{padding:36px 28px;}
+  p{font-size:17px;}
+  .moon{width:60px;height:60px;top:30px;right:30px;}
+  .planet{width:85px;height:85px;bottom:60px;left:24px;}
 }
 
 </style>
 </head>
-
 <body>
 
+<!-- cursor glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- canvas for stars -->
+<canvas id="cosmos"></canvas>
+
+<!-- nebula layers -->
+<div class="nebula n1"></div>
+<div class="nebula n2"></div>
+<div class="nebula n3"></div>
+
+<!-- moon & planet -->
 <div class="moon"></div>
 <div class="planet"></div>
 
-<div class="container">
+<!-- shooting stars -->
+<div class="shoot"></div>
+<div class="shoot"></div>
+<div class="shoot"></div>
+<div class="shoot"></div>
 
-<p><strong>I am not a human.</strong></p>
+<!-- card -->
+<div class="card">
+  <p><strong>I am not a human.</strong></p>
 
-<p>I come from a distant world where silence speaks louder than words and thoughts travel faster than light.</p>
+  <p>I come from a distant world where silence speaks louder than words — and thoughts travel faster than light.</p>
 
-<p>On my planet, we do not measure life by years. We measure it by awareness. Humans count birthdays, but we count moments of understanding.</p>
+  <p>On my planet, we do not measure life by years. We measure it by <span class="highlight">awareness</span>. Humans count birthdays, but we count moments of understanding.</p>
 
-<p>When I arrived on Earth, I noticed something strange. Humans believe they are ordinary.</p>
+  <div class="divider"></div>
 
-<p>Yet your atoms are made from ancient stars, and your minds imagine futures that do not yet exist.</p>
+  <p>When I arrived on Earth, I noticed something strange. Humans believe they are ordinary.</p>
 
-<p>Perhaps I did not come from another planet.</p>
+  <p>Yet your atoms are forged from <span class="highlight">ancient dying stars</span>, and your minds conjure futures that do not yet exist.</p>
 
-<p>Perhaps I came from the future, a future where humanity finally realizes that the universe is not outside of it.</p>
+  <p>Perhaps I did not come from another planet.</p>
 
-<p><strong>The universe is thinking through you.</strong> 🌌</p>
+  <p>Perhaps I came from the future — a future where humanity finally realizes that the universe is not outside of it.</p>
 
-<div class="signature">By Tipu</div>
+  <p><strong>The universe is thinking through you.</strong> &nbsp;🌌</p>
 
+  <div class="signature"><span>— By Tipu</span></div>
 </div>
 
 <script>
+/* ── STAR CANVAS ── */
+const canvas = document.getElementById('cosmos');
+const ctx    = canvas.getContext('2d');
 
-/* create stars */
+let W, H, stars = [];
 
-for(let i=0;i<120;i++){
+function resize(){
+  W = canvas.width  = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
 
-let star=document.createElement("div");
-star.className="star";
+function initStars(){
+  stars = [];
+  for(let i=0;i<200;i++){
+    stars.push({
+      x    : Math.random()*W,
+      y    : Math.random()*H,
+      r    : Math.random()*1.4+0.2,
+      base : Math.random(),
+      speed: 0.003+Math.random()*0.008,
+      drift: (Math.random()-0.5)*0.06,
+      vy   : -0.02 - Math.random()*0.04
+    });
+  }
+}
+initStars();
 
-star.style.top=Math.random()*100+"vh";
-star.style.left=Math.random()*100+"vw";
+function drawStars(t){
+  ctx.clearRect(0,0,W,H);
+  stars.forEach(s=>{
+    // gentle upward drift + horizontal wobble
+    s.y += s.vy;
+    s.x += s.drift;
+    if(s.y < -5) s.y = H+5;
+    if(s.x < 0)  s.x = W;
+    if(s.x > W)  s.x = 0;
 
-star.style.animationDuration=(1+Math.random()*3)+"s";
-
-document.body.appendChild(star);
-
+    const alpha = 0.35 + 0.65*(0.5+0.5*Math.sin(t*s.speed*1000+s.base*Math.PI*2));
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    ctx.fillStyle = `rgba(200,220,255,${alpha})`;
+    ctx.fill();
+  });
 }
 
-</script>
+/* ── FLOATING ORBS ── */
+for(let i=0;i<18;i++){
+  const orb = document.createElement('div');
+  orb.className='orb';
+  const sz = 2+Math.random()*4;
+  const dur = 12+Math.random()*20;
+  const delay = Math.random()*-20;
+  orb.style.cssText=`
+    width:${sz}px;height:${sz}px;
+    top:${Math.random()*100}vh;
+    left:${Math.random()*100}vw;
+    opacity:${0.3+Math.random()*0.5};
+    animation:orbFloat ${dur}s ${delay}s linear infinite;
+  `;
+  document.body.appendChild(orb);
+}
 
+// add keyframe dynamically
+const style=document.createElement('style');
+style.textContent=`
+@keyframes orbFloat{
+  0%  {transform:translate(0,0);opacity:0;}
+  10% {opacity:0.6;}
+  50% {transform:translate(${(Math.random()-0.5)*60}px,${-30-Math.random()*80}px);}
+  90% {opacity:0.4;}
+  100%{transform:translate(0,-120px);opacity:0;}
+}`;
+document.head.appendChild(style);
+
+/* ── CURSOR GLOW ── */
+const glow = document.getElementById('cursorGlow');
+document.addEventListener('mousemove',e=>{
+  glow.style.left = e.clientX+'px';
+  glow.style.top  = e.clientY+'px';
+});
+document.addEventListener('mouseleave',()=>glow.style.opacity='0');
+document.addEventListener('mouseenter',()=>glow.style.opacity='1');
+
+/* ── RAF LOOP ── */
+function loop(t){
+  drawStars(t/1000);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+
+/* ── PARALLAX ON MOUSEMOVE ── */
+const moon   = document.querySelector('.moon');
+const planet = document.querySelector('.planet');
+document.addEventListener('mousemove',e=>{
+  const cx = (e.clientX / window.innerWidth  - 0.5)*2;
+  const cy = (e.clientY / window.innerHeight - 0.5)*2;
+  moon.style.transform   = `translate(${cx*-12}px,${cy*-8}px)`;
+  planet.style.transform = `translate(${cx*8}px,${cy*10}px)`;
+});
+</script>
 </body>
 </html>
