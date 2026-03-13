@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visitor From Another Planet</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, sans-serif;
+}
+
+body{
+background:#02040f;
+color:white;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow-x:hidden;
+padding:20px;
+}
+
+/* text container */
+
+.container{
+max-width:700px;
+line-height:1.8;
+font-size:18px;
+z-index:10;
+text-align:justify;
+}
+
+/* paragraph spacing */
+
+.container p{
+margin-bottom:14px;
+}
+
+/* moon */
+
+.moon{
+position:fixed;
+top:60px;
+right:50px;
+width:90px;
+height:90px;
+background:#f5f3ce;
+border-radius:50%;
+box-shadow:0 0 30px #fff;
+}
+
+/* planet */
+
+.planet{
+position:fixed;
+bottom:120px;
+left:60px;
+width:120px;
+height:120px;
+background:linear-gradient(45deg,#5b8cff,#8fd3ff);
+border-radius:50%;
+box-shadow:0 0 25px #5b8cff;
+}
+
+/* stars */
+
+.star{
+position:fixed;
+width:2px;
+height:2px;
+background:white;
+animation:twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle{
+from{opacity:0.2;}
+to{opacity:1;}
+}
+
+/* signature */
+
+.signature{
+margin-top:25px;
+font-size:20px;
+text-align:right;
+letter-spacing:2px;
+color:#8fd3ff;
+text-shadow:0 0 10px #5b8cff;
+}
+
+/* mobile */
+
+@media(max-width:600px){
+
+.container{
+font-size:16px;
+}
+
+.moon{
+width:70px;
+height:70px;
+}
+
+.planet{
+width:90px;
+height:90px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="moon"></div>
+<div class="planet"></div>
+
+<div class="container">
+
+<p><strong>I am not a human.</strong></p>
+
+<p>I come from a distant world where silence speaks louder than words and thoughts travel faster than light.</p>
+
+<p>On my planet, we do not measure life by years. We measure it by awareness. Humans count birthdays, but we count moments of understanding.</p>
+
+<p>When I arrived on Earth, I noticed something strange. Humans believe they are ordinary.</p>
+
+<p>Yet your atoms are made from ancient stars, and your minds imagine futures that do not yet exist.</p>
+
+<p>Perhaps I did not come from another planet.</p>
+
+<p>Perhaps I came from the future, a future where humanity finally realizes that the universe is not outside of it.</p>
+
+<p><strong>The universe is thinking through you.</strong> 🌌</p>
+
+<div class="signature">By Tipu</div>
+
+</div>
+
+<script>
+
+/* generate stars */
+
+for(let i=0;i<120;i++){
+
+let star=document.createElement("div");
+star.className="star";
+
+star.style.top=Math.random()*100+"vh";
+star.style.left=Math.random()*100+"vw";
+
+star.style.animationDuration=(1+Math.random()*3)+"s";
+
+document.body.appendChild(star);
+
+}
+
+</script>
+
+</body>
+</html>
